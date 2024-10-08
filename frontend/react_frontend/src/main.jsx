@@ -1,7 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
+import ProtectedRoute from './components/auth/ProtectedRoute'
+
 import registerRoutes from './pages/register/routes';
+import loginRoutes from './pages/login/routes';
 
 import {
   createBrowserRouter,
@@ -18,9 +21,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <div>Dashboard!</div>,
+    element: <ProtectedRoute>
+      <div>Dashboard!</div>
+    </ProtectedRoute>,
   },
-  ...registerRoutes
+  ...registerRoutes,
+  ...loginRoutes
 ]);
 
 createRoot(document.getElementById('root')).render(
