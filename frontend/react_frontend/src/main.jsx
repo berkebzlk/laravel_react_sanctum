@@ -20,22 +20,28 @@ import AppLayout from './components/layouts/AppLayout.jsx';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <div>Hello world!</div>,
-    errorElement: <div>Error!</div>,
-  },
-  {
-    path: "/dashboard",
-    element: <ProtectedRoute>
-      <div>Dashboard!</div>
-    </ProtectedRoute>,
-  },
-  {
-    path: "/deneme",
-    element: <div>
-      <NavLink to="/dashboard">
-        dashboarda giderr
-      </NavLink>
-    </div>,
+    element: <AppLayout />,
+    children: [
+      {
+        path: "",
+        element: <div>Hello world!</div>,
+        errorElement: <div>Error!</div>,
+      },
+      {
+        path: "dashboard",
+        element: <ProtectedRoute>
+          <div>Dashboard!</div>
+        </ProtectedRoute>,
+      },
+      {
+        path: "/deneme",
+        element: <div>
+          <NavLink to="/dashboard">
+            dashboarda giderr
+          </NavLink>
+        </div>,
+      },
+    ]
   },
   ...registerRoutes,
   ...loginRoutes
@@ -44,9 +50,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ChakraProvider>
-      <AppLayout>
-        <RouterProvider router={router} />
-      </AppLayout>
+      <RouterProvider router={router} />
     </ChakraProvider>
-  </StrictMode>,
+  </StrictMode>
 )
