@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { useAuthStore } from './store/useAuthStore';
+
 
 const api = axios.create({
   baseURL: 'http://127.0.0.1:8000/api',
@@ -7,13 +9,12 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
+const token = "";
 api.defaults.withCredentials = true;
 api.defaults.withXSRFToken = true;
-
+console.log('token | axios', token)
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
