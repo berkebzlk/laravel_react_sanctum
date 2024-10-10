@@ -16,9 +16,7 @@ const ProtectedRoute = ({ children }) => {
             if (token) {
                 console.log('token var')
                 try {
-                    const response = await axios.get('/user', {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
+                    const response = await axios.get('/user');
 
                     console.log('dashboard user', response)
 

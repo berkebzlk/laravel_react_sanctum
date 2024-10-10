@@ -1,33 +1,47 @@
 import React, { useState } from 'react'
 import axios from '../../axios'
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/useAuthStore';
+import {Link} from 'react-router-dom'
 
-const Register = () => {
+import { Button, Flex, FormControl, FormLabel, Heading, Input, Text, VStack, useColorModeValue } from '@chakra-ui/react'
+
+import PreviewOptionsNavbar from '../../components/layouts/PreviewOptionsNavbar'
+import { BrandName } from '../../constants'
+
+
+
+const Login = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const login = useAuthStore((state) => state.login);
+
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-
+        console.log('handlesubmit register')
         try {
-            const response = await axios.post('/register', {
+            const registrerResponse = await axios.post('/register', {
                 name,
                 email,
                 password,
-                password_confirmation: password,
+                password_confirmation:password
             });
 
-            console.log('response', response)
+            console.log('response', registrerResponse)
 
-            if(response.status == 200) {
-                navigate('/login');                
+            if (registrerResponse.status !== 200) {
+                console.log('registrerResponse de hata')
+                return;
             }
+
+            console.log('register navigate oncesi')
+            navigate('/login');
         } catch (err) {
             if (err.response && err.response.data) {
-                console.log(err.response.data.message || 'Registration failed!');
+                console.log(err.response.data.message || 'Register failed!');
             } else {
                 console.log('An unexpected error occurred!');
             }
@@ -36,35 +50,44 @@ const Register = () => {
 
 
     return (
-        <div className="flex items-center justify-center w-full min-h-screen dark:bg-gray-950">
-            <div className="max-w-md px-8 py-6 bg-white rounded-lg shadow-md dark:bg-gray-900">
-                <h1 className="mb-4 text-2xl font-bold text-center dark:text-gray-200">Welcome Back!</h1>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
-                        <input
-                            onChange={(e) => setName(e.target.value)}
-                            type="text" id="name" className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="your name" />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
-                        <input
-                            onChange={(e) => setEmail(e.target.value)}
-                            type="email" id="email" className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="your@email.com" />
-                    </div>
-                    <div className="mb-4">
-                        <label
-                            htmlFor="password" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                        <input
-                            onChange={(e) => setPassword(e.target.value)}
-                            type="password" id="password" className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter your password" />
-                    </div>
-
-                    <button type="submit" className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Login</button>
-                </form>
-            </div>
-        </div >
+        <>
+            <title>Auth Simple | {BrandName}</title>
+            <PreviewOptionsNavbar />
+            <Flex minH="100vh" align="center" bg={useColorModeValue("gray.100", "gray.900")}>
+                <VStack
+                    w={{ base: '100%', md: '60%', lg: '45%', xl: '35%' }}
+                    mx='auto'
+                    p='10'
+                    h="100%"
+                    rounded='lg'
+                    shadow='sm'
+                    bg={useColorModeValue("white", "gray.800")}
+                    spacing="4"
+                >
+                    <Heading as='h1' fontSize="3xl">Sign up to {BrandName}</Heading>
+                    <VStack spacing="5" w='100%' align="start" as="form">
+                    <FormControl>
+                            <FormLabel>Name</FormLabel>
+                            <Input onChange={(e) => setName(e.target.value)} type="text" placeholder="Name" />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Email Address</FormLabel>
+                            <Input onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email Address" />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Password</FormLabel>
+                            <Input onChange={(e) => setPassword(e.target.value)} type="password" placeholder="*******" />
+                        </FormControl>
+                        <Button onClick={handleSubmit} w='full' size="lg" colorScheme='blue'>Sign In</Button>
+                    </VStack>
+                    <Text fontWeight="medium">
+                        Have an account? {' '}
+                        <Link to="/login" color="blue.400">Login</Link>
+                    </Text>
+                </VStack>
+            </Flex>
+        </>
     )
 }
 
-export default Register
+export default Login

@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import axios from '../../axios'
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore'; // Zustand store'unu içe aktar
+import {Link} from 'react-router-dom'
 
-import { Button, Flex, FormControl, FormLabel, Heading, Input, Link, Text, VStack, useColorModeValue } from '@chakra-ui/react'
+import { Button, Flex, FormControl, FormLabel, Heading, Input, Text, VStack, useColorModeValue } from '@chakra-ui/react'
 
 import PreviewOptionsNavbar from '../../components/layouts/PreviewOptionsNavbar'
 import { BrandName } from '../../constants'
+
 
 
 const Login = () => {
@@ -44,7 +46,7 @@ const Login = () => {
 
             login(token, user);
             console.log('navigate oncesi')
-            navigate('/dashboard');
+            navigate('/');
         } catch (err) {
             if (err.response && err.response.data) {
                 console.log(err.response.data.message || 'Login failed!');
@@ -84,7 +86,7 @@ const Login = () => {
                     </VStack>
                     <Text fontWeight="medium">
                         Don't have an account? {' '}
-                        <Link href="/register" color="blue.400">Register</Link>
+                        <Link to="/register" color="blue.400">Register</Link>
                     </Text>
                 </VStack>
             </Flex>

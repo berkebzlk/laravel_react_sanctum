@@ -3,8 +3,8 @@ import { extendTheme } from '@chakra-ui/react'
 import { Global } from '@emotion/react'
 
 export const Font = () => (
-    <Global
-        styles={`
+  <Global
+    styles={`
         @font-face {
             font-family: 'Poppins';
             font-style: normal;
@@ -248,14 +248,76 @@ export const Font = () => (
             unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
           }
         `}
-    />
+  />
 )
 
+
+const styles = {
+  global: {
+    svg: {
+      cursor: "pointer",
+    },
+    ".table": {
+      border: "1px solid #424242",
+    },
+    ".tr": {
+      display: "flex",
+      width: "fit-content",
+    },
+    ".th, .td": { boxShadow: "inset 0 0 0 1px #424242" },
+    ".th": {
+      position: "relative",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      color: "gray.400",
+      padding: "0.5rem",
+      fontWeight: "bold",
+      fontSize: "xs",
+      textTransform: "uppercase",
+      textAlign: "center",
+    },
+    ".td > input": {
+      m: "1",
+      padding: "0.2rem",
+      bg: "transparent",
+      maxW: "100%",
+    },
+    ".date-wrapper": {
+      display: "flex",
+      alignItems: "center",
+      w: "100%",
+      h: "100%",
+    },
+    ".resizer": {
+      position: "absolute",
+      opacity: 0,
+      top: 0,
+      right: 0,
+      h: "100%",
+      w: "5px",
+      bg: "#27bbff",
+      cursor: "col-resize",
+      userSelect: "none",
+      touchAction: "none",
+      borderRadius: "6px",
+    },
+    ".resizer.isResizing": {
+      bg: "#2eff31",
+      opacity: 1,
+    },
+    "*:hover > .resizer": {
+      opacity: 1,
+    },
+  }
+}
+
 export const theme = extendTheme(
-    {
-        fonts: {
-            heading: 'Poppins',
-            body: 'Poppins'
-        }
+  {
+    styles,
+    fonts: {
+      heading: 'Poppins',
+      body: 'Poppins'
     }
+  }
 )

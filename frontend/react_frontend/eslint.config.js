@@ -18,6 +18,7 @@ export default [
       },
     },
     settings: { react: { version: '18.3' } },
+    parser: "@typescript-eslint/parser",
     plugins: {
       react,
       'react-hooks': reactHooks,

@@ -4,22 +4,26 @@ import { useAuthStore } from './store/useAuthStore';
 
 const api = axios.create({
   baseURL: 'http://127.0.0.1:8000/api',
-  timeout: 10000,
+  timeout: 20000,
   headers: {
     'Content-Type': 'application/json',
+    'Authorization': `Bearer ${useAuthStore.getState().token}`,
   },
 });
-const token = "";
+
 api.defaults.withCredentials = true;
 api.defaults.withXSRFToken = true;
-console.log('token | axios', token)
-api.interceptors.request.use(
-  (config) => {
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
+
+api.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().token;
+
+  console.log('protected token', token)
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+},
   (error) => {
     return Promise.reject(error);
   }
