@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Box, Button, ButtonGroup, Icon, Text } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Box, Icon, Input, Menu, MenuList, MenuOptionGroup, Select, Stack, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr, MenuItemOption, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, Checkbox, Tfoot } from "@chakra-ui/react";
 import {
   flexRender,
   getCoreRowModel,
@@ -9,144 +9,126 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import DATA from "../../data";
-import EditableCell from "../../components/table/EditableCell";
-import TextCell from "../../components/table/TextCell";
-import StatusCell from "../../components/table/StatusCell";
-import DateCell from "../../components/table/DateCell";
-import Filters from "../../components/table/Filters";
 import SortIcon from "../../components/table/icons/SortIcon";
-
-const columns = [
-  {
-    accessorKey: "task",
-    header: "Task",
-    size: 225,
-    cell: TextCell,
-    enableColumnFilter: true,
-    filterFn: "includesString",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: StatusCell,
-    enableSorting: false,
-    enableColumnFilter: true,
-    filterFn: (row, columnId, filterStatuses) => {
-      if (filterStatuses.length === 0) return true;
-      const status = row.getValue(columnId);
-      return filterStatuses.includes(status?.id);
-    },
-  },
-  {
-    accessorKey: "due",
-    header: "Due",
-    cell: DateCell,
-  },
-  {
-    accessorKey: "notes",
-    header: "Notes",
-    size: 225,
-    cell: EditableCell,
-  },
-];
+import { createColumns } from "../../helper";
+import { unwantedColumns } from './unwantedColumns';
+import { ColumnVisibilityFilter, DefaultColumnFilter, TableFooter } from "../../components/table/components";
 
 const ExampleTable = () => {
   const [data, setData] = useState(DATA);
   const [columnFilters, setColumnFilters] = useState([]);
+  const [columnVisibility, setColumnVisibility] = useState({});
+  const [pageSize, setPageSize] = useState(20);
+
+  let columns = createColumns(DATA);
+  columns = columns.filter(column => {
+    return !unwantedColumns.includes(column.accessorKey)
+  });
 
   const table = useReactTable({
     data,
     columns,
     state: {
       columnFilters,
+      columnVisibility
     },
+    initialState: {
+      pagination: {
+        pageSize: pageSize,
+      },
+    },
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    columnResizeMode: "onChange",
-    meta: {
-      updateData: (rowIndex, columnId, value) =>
-        setData((prev) =>
-          prev.map((row, index) =>
-            index === rowIndex
-              ? {
-                  ...prev[rowIndex],
-                  [columnId]: value,
-                }
-              : row
-          )
-        ),
-    },
+    enableColumnResizing: true,
+    columnResizeMode: 'onChange'
   });
 
+  useEffect(() => {
+    const allColumns = table.getAllColumns().reduce((acc, column) => {
+      acc[column.id] = true;
+      return acc;
+    }, {});
+    setColumnVisibility(allColumns);
+  }, [table]);
+
+  const handleColumnVisibilityChange = (columnId) => {
+    setColumnVisibility((prev) => ({
+      ...prev,
+      [columnId]: !prev[columnId],
+    }));
+  };
+
   return (
-    <Box>
-      <Filters
-        columnFilters={columnFilters}
-        setColumnFilters={setColumnFilters}
-      />
-      <Box className="table" w={table.getTotalSize()}>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <Box className="tr" key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <Box className="th" w={header.getSize()} key={header.id}>
-                {header.column.columnDef.header}
-                {header.column.getCanSort() && (
-                  <Icon
-                    as={SortIcon}
-                    mx={3}
-                    fontSize={14}
-                    onClick={header.column.getToggleSortingHandler()}
-                  />
-                )}
-                {
-                  {
-                    asc: " 🔼",
-                    desc: " 🔽",
-                  }[header.column.getIsSorted()]
-                }
-                <Box
-                  onMouseDown={header.getResizeHandler()}
-                  onTouchStart={header.getResizeHandler()}
-                  className={`resizer ${
-                    header.column.getIsResizing() ? "isResizing" : ""
-                  }`}
-                />
-              </Box>
-            ))}
-          </Box>
-        ))}
-        {table.getRowModel().rows.map((row) => (
-          <Box className="tr" key={row.id}>
-            {row.getVisibleCells().map((cell) => (
-              <Box className="td" w={cell.column.getSize()} key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </Box>
-            ))}
-          </Box>
-        ))}
+    <TableContainer p={5}>
+      <Box mb={4}>
+        <ColumnVisibilityFilter table={table} handleColumnVisibilityChange={handleColumnVisibilityChange} />
       </Box>
-      <br />
-      <Text mb={2}>
-        Page {table.getState().pagination.pageIndex + 1} of{" "}
-        {table.getPageCount()}
-      </Text>
-      <ButtonGroup size="sm" isAttached variant="outline">
-        <Button
-          onClick={() => table.previousPage()}
-          isDisabled={!table.getCanPreviousPage()}
-        >
-          {"<"}
-        </Button>
-        <Button
-          onClick={() => table.nextPage()}
-          isDisabled={!table.getCanNextPage()}
-        >
-          {">"}
-        </Button>
-      </ButtonGroup>
-    </Box>
+
+      <Box h={700} maxH={700} overflowY={"auto"}>
+        <Table mb={4}>
+          <Thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <React.Fragment key={headerGroup.id}>
+                <Tr key={`${headerGroup.id}-input`}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <Th w={header.getSize()} key={`${header.id}-input`}>
+                        <DefaultColumnFilter id={header.id} columnFilters={columnFilters} setColumnFilters={setColumnFilters} />
+                      </Th>
+                    )
+                  })}
+                </Tr>
+                <Tr key={`${headerGroup.id}-header`}>
+                  {headerGroup.headers.map((header) => (
+                    <Th w={header.getSize()} key={`${header.id}-header`}>
+                      {header.column.columnDef.header}
+                      {header.column.getCanSort() && (
+                        <Icon
+                          as={SortIcon}
+                          mx={3}
+                          fontSize={14}
+                          onClick={header.column.getToggleSortingHandler()}
+                        />
+                      )}
+                      {
+                        {
+                          asc: " 🔼",
+                          desc: " 🔽",
+                        }[header.column.getIsSorted()]
+                      }
+                      <Box
+                        onMouseDown={header.getResizeHandler()}
+                        onTouchStart={header.getResizeHandler()}
+                      />
+                    </Th>
+                  ))}
+                </Tr>
+              </React.Fragment>
+
+            ))}
+          </Thead>
+          <Tbody>
+            {table.getRowModel().rows.map((row) => {
+
+              return (
+                <Tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <Td w={cell.column.getSize()} key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </Td>
+                  ))}
+                </Tr>
+              )
+            })}
+          </Tbody>
+        </Table>
+      </Box>
+      <TableFooter table={table} pageSize={pageSize} setPageSize={setPageSize} />
+
+    </TableContainer>
   );
 };
 export default ExampleTable;

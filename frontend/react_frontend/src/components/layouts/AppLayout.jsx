@@ -248,7 +248,7 @@ export default function NavSidebar() {
                 </HStack>
             </Flex>
             <HStack align="start" spacing={0}>
-                <Box as="aside" minH="90vh" w={isOpen ? 72 : 12} borderRight="2px" borderColor={useColorModeValue('gray.200', 'gray.900')} transition="width 0.25s ease">
+                <Box as="aside" minH="90vh"  minW={isOpen ? 250 : 12} borderRight="2px" borderColor={useColorModeValue('gray.200', 'gray.900')} transition="width 0.25s ease">
                     <List spacing={0} p="0.5">
                         {
                             renderListItems(menu, isOpen)
@@ -256,7 +256,7 @@ export default function NavSidebar() {
                     </List>
                 </Box>
                 <Flex as="main" w='full' minH="90vh" align="start" justify="start" bg={useColorModeValue('gray.50', 'gray.900')}>
-                    <Box>
+                    <Box w={'100%'}>
                         <Outlet />
                     </Box>
                 </Flex>

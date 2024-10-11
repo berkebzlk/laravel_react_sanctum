@@ -5,19 +5,26 @@ import ProtectedRoute from '../components/auth/ProtectedRoute'
 import registerRoutes from '../pages/register/routes';
 import loginRoutes from '../pages/login/routes';
 import exampleTableRoutes from '../pages/exampleTable/routes';
+import satisRoutes from '../pages/Satis/routes.jsx';
 
 import AppLayout from '../components/layouts/AppLayout.jsx';
 import { Heading } from "@chakra-ui/react";
+import { ErrorBoundary, fallbackRender } from "../components/error/ErrorBoundary.jsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <ProtectedRoute><AppLayout /></ProtectedRoute>,
+        element: (
+        <ErrorBoundary fallbackRender={fallbackRender}>
+            <ProtectedRoute>
+                <AppLayout />
+            </ProtectedRoute>
+        </ErrorBoundary>)
+        ,
         children: [
             { path: "/", element: <Heading>ANA SAYFA</Heading> },
             { path: "/Panel/10", element: <Heading>2022 DASHBOARD</Heading> },
             { path: "/Panel/11", element: <Heading>2023 DASHBOARD</Heading> },
-            { path: "/AnalizSatFat", element: <Heading>Satış Analiz Listesi</Heading> },
             { path: "/FaturaRapor", element: <Heading>Ülke Bazında Satış Raporu</Heading> },
             { path: "/AnalizAlFat", element: <Heading>Alış Analiz Listesi</Heading> },
             { path: "/AlisByUlke", element: <Heading>Ülke Bazında Alış Raporu</Heading> },
@@ -30,7 +37,8 @@ const router = createBrowserRouter([
 
 
             ...exampleTableRoutes,
-        ]
+            ...satisRoutes
+        ],
     },
     ...registerRoutes,
     ...loginRoutes,
