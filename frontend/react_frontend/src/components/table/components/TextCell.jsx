@@ -1,7 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
 
 const TextCell = ({ getValue }) => {
-    const value = getValue(); // Değer alınıyor
+    const value = getValue();
 
     return (
         <Flex
