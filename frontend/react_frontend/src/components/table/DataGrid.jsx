@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Icon, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue } from "@chakra-ui/react";
+import { Box, Icon, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useColorModeValue } from "@chakra-ui/react";
 import {
     flexRender,
     getCoreRowModel,
@@ -80,7 +80,7 @@ const ExampleTable = ({ data, unwantedColumns }) => {
                                     {headerGroup.headers.map((header) => {
                                         return (
                                             <Th borderBottom={"none"} w={header.getSize()} key={`${header.id}-input`}>
-                                                <DefaultColumnFilter id={header.id} columnFilters={columnFilters} setColumnFilters={setColumnFilters} />
+                                                <DefaultColumnFilter column={header.column} />
                                             </Th>
                                         )
                                     })}
@@ -131,7 +131,13 @@ const ExampleTable = ({ data, unwantedColumns }) => {
                 </Table>
             </Box>
             <TableFooter table={table} pageSize={pageSize} setPageSize={setPageSize} />
-
+            {/* <pre>
+                {JSON.stringify(
+                    { columnFilters: table.getState().columnFilters },
+                    null,
+                    2
+                )}
+            </pre> */}
         </TableContainer>
     );
 };

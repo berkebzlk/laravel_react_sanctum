@@ -1,23 +1,41 @@
 import { Input } from "@chakra-ui/react";
+import React from "react";
 
-function DefaultColumnFilter({ setColumnFilters, id }) {
-    const handleOnChange = (id, value) =>
-        setColumnFilters((prev) => {
-            if (!value) {
-                return prev.filter((f) => f.id !== id);
-            }
+function DebouncedInput({ value: initialValue, onChange, debounce = 500, ...props }) {
+    const [value, setValue] = React.useState(initialValue);
 
-            return prev.filter((f) => f.id !== id).concat({ id, value })
-        });
+    React.useEffect(() => {
+        setValue(initialValue);
+    }, [initialValue]);
+
+    React.useEffect(() => {
+        const timeout = setTimeout(() => {
+            onChange(value);
+        }, debounce);
+
+        return () => clearTimeout(timeout);
+    }, [value]);
 
     return (
         <Input
-            onChange={(e) => handleOnChange(id, e.target.value)}
+            {...props}
+            value={value} 
+            onChange={e => setValue(e.target.value)}
+        />
+    );
+}
+
+function DefaultColumnFilter({ column }) {
+    const columnFilterValue = column.getFilterValue()
+
+    return (
+        <DebouncedInput
+            onChange={value => column.setFilterValue(value)}
             placeholder={`Search records...`}
             size="sm"
             variant="outline"
             mb={2}
-        />
+            value={(columnFilterValue ?? '').toString()} />
     );
 }
 
