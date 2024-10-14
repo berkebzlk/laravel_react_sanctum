@@ -6,6 +6,7 @@ import registerRoutes from '../pages/register/routes';
 import loginRoutes from '../pages/login/routes';
 import exampleTableRoutes from '../pages/exampleTable/routes';
 import satisRoutes from '../pages/Satis/routes.jsx';
+import stokRoutes from '../pages/Stok/routes.jsx';
 
 import AppLayout from '../components/layouts/AppLayout.jsx';
 import { Heading } from "@chakra-ui/react";
@@ -37,7 +38,8 @@ const router = createBrowserRouter([
 
 
             ...exampleTableRoutes,
-            ...satisRoutes
+            ...satisRoutes,
+            ...stokRoutes
         ],
     },
     ...registerRoutes,

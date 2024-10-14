@@ -12,17 +12,22 @@ import SortIcon from "../../components/table/icons/SortIcon";
 import { createColumns } from "../../helper";
 import { ColumnVisibilityFilter, DefaultColumnFilter, TableFooter } from "../../components/table/components";
 
-const ExampleTable = ({ data, unwantedColumns }) => {
+const DataGrid = ({ data, unwantedColumns, detailPage = false }) => {
 
     const [columnFilters, setColumnFilters] = useState([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [pageSize, setPageSize] = useState(20);
 
     // Create columns and filter unwanted columns
-    let columns = createColumns(data);
+    let columns = createColumns(data, detailPage);
     columns = columns.filter(column => {
         return !unwantedColumns.includes(column.accessorKey)
     });
+    if(detailPage) {
+        columns = columns.filter(column => {
+            return column.accessorKey !== 'id'
+        })
+    }
 
     const table = useReactTable({
         data,
@@ -78,11 +83,19 @@ const ExampleTable = ({ data, unwantedColumns }) => {
                             <React.Fragment key={headerGroup.id}>
                                 <Tr key={`${headerGroup.id}-input`}>
                                     {headerGroup.headers.map((header) => {
-                                        return (
-                                            <Th borderBottom={"none"} w={header.getSize()} key={`${header.id}-input`}>
-                                                <DefaultColumnFilter column={header.column} />
-                                            </Th>
-                                        )
+
+                                        if (header.column.id.toLowerCase() == "detay") {
+                                            return (
+                                                <Th borderBottom={"none"} w={header.getSize()} key={`${header.id}-input`}>
+                                                </Th>
+                                            )
+                                        } else {
+                                            return (
+                                                <Th borderBottom={"none"} w={header.getSize()} key={`${header.id}-input`}>
+                                                    <DefaultColumnFilter column={header.column} />
+                                                </Th>
+                                            )
+                                        }
                                     })}
                                 </Tr>
                                 <Tr borderTop={"none"} key={`${headerGroup.id}-header`}>
@@ -141,4 +154,4 @@ const ExampleTable = ({ data, unwantedColumns }) => {
         </TableContainer>
     );
 };
-export default ExampleTable;
+export default DataGrid;
