@@ -2,7 +2,13 @@ const createColumns = (data) => {
   const keys = Object.keys(data[0]);
 
   // Decimal olup olmadığını kontrol eden fonksiyon
-  const isDecimal = (value) => !isNaN(value) && value.toString().includes('.');
+  const isDecimal = (value) => {
+    if (value === null) {
+      return ''
+    }
+
+    return !isNaN(value) && value.toString().includes('.')
+  };
 
   return keys.map((key) => ({
     accessorKey: key,

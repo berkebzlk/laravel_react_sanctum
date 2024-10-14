@@ -35,7 +35,7 @@ function DefaultColumnFilter({ column }) {
             size="sm"
             variant="outline"
             mb={2}
-            value={(columnFilterValue ?? '').toString()} />
+            value={(columnFilterValue ?? '')} />
     );
 }
 
