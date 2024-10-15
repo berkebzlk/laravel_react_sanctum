@@ -1,19 +1,21 @@
-import { Flex, Input, Text } from '@chakra-ui/react'
+import { Box, Input, Text } from '@chakra-ui/react'
 import React from 'react'
 
-const ControlledInput = ({value, setValue, w="400px", inpW="300px", placeholder="", size="sm", ...props}) => {
+const ControlledInput = ({ label, ref, value, onChange, name, inpW="300px", placeholder="", size="sm", ...props}) => {
   
   return (
-    <Flex w={w} {...props}>
-      <Text>Value: {value}</Text>
+    <Box {...props}>
+      <Text fontSize={"sm"} >{label}</Text>
       <Input
-        w={inpW}
+        w={'100%'}
         value={value}
-        onChange={setValue}
+        onChange={onChange}
         placeholder={placeholder}
         size={size}
+        name={name}
+        ref={ref}
       />
-    </Flex>
+    </Box>
   )
 }
 
